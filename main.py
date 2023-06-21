@@ -39,11 +39,17 @@ def main():
         user_input = st.text_input("Your message", key="user_input")
 
     if user_input:
-        message(user_input, is_user=True)
         st.session_state.messages.append(HumanMessage(content=user_input))
         with st.spinner("Thinking..."):
             response = chat(st.session_state.messages)
-        message(response.content, is_user=False)
+        st.session_state.messages.append(AIMessage(content=response.content))
+
+    messages = st.session_state.get('messages', [])
+    for i, msg in enumerate(messages[1:]):
+        if i % 2 == 0:
+            message(msg.content, is_user=True, key=str(i) + '_user')
+        else:
+            message(msg.content, is_user=False, key=str(i) + '_ai')
 
 
 if __name__ == "__main__":
