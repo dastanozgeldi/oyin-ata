@@ -28,9 +28,10 @@ def main():
 
     chat = ChatOpenAI(temperature=0)
 
-    messages = [
-        SystemMessage(content="You are a helpful assistant."),
-    ]
+    if "messages" not in st.session_state:
+        st.session_state.messages = [
+            SystemMessage(content="You are a helpful assistant."),
+        ]
 
     st.header("Your own ChatGPT 🤖")
 
@@ -39,8 +40,9 @@ def main():
 
     if user_input:
         message(user_input, is_user=True)
-        messages.append(HumanMessage(content=user_input))
-        response = chat(messages)
+        st.session_state.messages.append(HumanMessage(content=user_input))
+        with st.spinner("Thinking..."):
+            response = chat(st.session_state.messages)
         message(response.content, is_user=False)
 
 
