@@ -38,7 +38,7 @@ class GitHub:
         else:
             print(f"❌ {response.status_code} - Error uploading file:", response.content)
 
-    def deploy(self, user: str, repo: str, branch: str):
+    def deploy(self, user: str, repo: str, branch: str) -> str:
         """Deploys the static website to GitHub Pages"""
         deploy_url = f"https://api.github.com/repos/{user}/{repo}/pages"
         data = {"source": {"branch": branch}}
@@ -49,3 +49,4 @@ class GitHub:
         # print(response.json())
         print(f"✅ {response.status_code} - Changes sent to GitHub Pages successfully.")
         print(f"Check in a minute: https://{user}.github.io/{repo}/")
+        return f"https://{user}.github.io/{repo}/"

@@ -1,6 +1,6 @@
 import openai
 
-BASE_PROMPT = """I'm going to send you a client's request for portfolio page and you need answer with code only, don't include questions and explanations. Here is the example.
+BASE_PROMPT = """I'm going to send you a client's request for portfolio page and you need answer with code only written in plain HTML + CSS + JS if needed. Don't include questions and explanations. Here is the example.
 
 Me: write a hello world page in html
 You: 
