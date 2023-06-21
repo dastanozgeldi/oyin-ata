@@ -1,55 +1,39 @@
 import os
-import streamlit as st
-from streamlit_chat import message
 from dotenv import load_dotenv
+from code_generation import CodeGeneration
 
-from langchain.chat_models import ChatOpenAI
-from langchain.schema import SystemMessage, HumanMessage, AIMessage
-
-
-def init():
-    load_dotenv()
-
-    # Load the OpenAI API key from the .env file
-    if os.getenv("OPENAI_API_KEY") is None or os.getenv("OPENAI_API_KEY") == "":
-        print("OPENAI_API_KEY is not set")
-        exit(1)
-    else:
-        print("OPENAI_API_KEY is set")
-
-    st.set_page_config(
-        page_title="Your own ChatGPT",
-        page_icon="🤖",
-    )
+from github import GitHub
 
 
 def main():
-    init()
+    load_dotenv()
 
-    chat = ChatOpenAI(temperature=0)
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    GITHUB_PERSONAL_ACCESS_TOKEN = os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN")
 
-    if "messages" not in st.session_state:
-        st.session_state.messages = [
-            SystemMessage(content="You are a helpful assistant."),
-        ]
+    user = "dastanozgeldi"
+    repo = "yerassyl_portfolio_page"
 
-    st.header("Your own ChatGPT 🤖")
+    github = GitHub(GITHUB_PERSONAL_ACCESS_TOKEN)
+    github.create_repo(
+        repo,
+        "😸 All this was done with the power of GitHub API and OpenAI API.",
+    )
 
-    with st.sidebar:
-        user_input = st.text_input("Your message", key="user_input")
+    code_generation = CodeGeneration(OPENAI_API_KEY)
+    html_content = code_generation.generate_html_game(
+        "I want to build a basic html portfolio. I'm Yerassyl, 15 yo react developer specializing in Next.js, currently building full stack apps in fintech field. Add some styles to the page in dark mode, center the content both horizontally and vertically and give a width of around 60ch."
+    )
 
-    if user_input:
-        st.session_state.messages.append(HumanMessage(content=user_input))
-        with st.spinner("Thinking..."):
-            response = chat(st.session_state.messages)
-        st.session_state.messages.append(AIMessage(content=response.content))
+    github.upload_file(
+        user,
+        repo,
+        "index.html",
+        html_content,
+        "upload test commit",
+    )
 
-    messages = st.session_state.get('messages', [])
-    for i, msg in enumerate(messages[1:]):
-        if i % 2 == 0:
-            message(msg.content, is_user=True, key=str(i) + '_user')
-        else:
-            message(msg.content, is_user=False, key=str(i) + '_ai')
+    github.deploy(user, repo, "main")
 
 
 if __name__ == "__main__":
