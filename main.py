@@ -59,6 +59,7 @@ def handle_newgame(message):
 
 def process_repository_name(message):
     repository_name = '-'.join(message.text.split())
+    print('>', message.from_user.username, ':', repository_name)
 
     chat_id = message.chat.id
 
@@ -74,6 +75,7 @@ def process_repository_name(message):
 
 def process_prompt(message, user_context):
     prompt = message.text
+    print('>', message.from_user.username, ':', prompt)
     # Retrieve the repository name from the user's context
     repository_name = user_context["repository_name"]
 
