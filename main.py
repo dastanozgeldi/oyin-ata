@@ -23,7 +23,7 @@ def handle_game(
     )
 
     code_generation = CodeGeneration(OPENAI_API_KEY)
-    # "I want to build a basic html portfolio. I'm Yerassyl, 15 yo react developer specializing in Next.js, currently building full stack apps in fintech field. Add some styles to the page in dark mode, center the content both horizontally and vertically and give a width of around 60ch."
+    # "I want to build a basic html game. I'm Yerassyl, 15 yo react developer specializing in Next.js, currently building full stack apps in fintech field. Add some styles to the page in dark mode, center the content both horizontally and vertically and give a width of around 60ch."
     html_content = code_generation.generate_html_game(prompt)
 
     github.upload_file(
@@ -42,23 +42,23 @@ def handle_game(
 def url(message):
     bot.send_message(
         message.from_user.id,
-        "Hey there! I'm your portfolio website builder bot. To get started use this command: /newportfolio",
+        "Hey there! I'm your web game builder bot. To get started use this command: /newgame",
     )
 
 
-@bot.message_handler(commands=["newportfolio"])
-def handle_newportfolio(message):
+@bot.message_handler(commands=["newgame"])
+def handle_newgame(message):
     chat_id = message.chat.id
 
     # Send a message to ask for the repository name
-    bot.send_message(chat_id, "Please enter the project name, for example: dastan_portfolio_page")
+    bot.send_message(chat_id, "Please enter the project name, for example: dastan_snake_game")
 
     # Register the next message handler to receive the repository name
     bot.register_next_step_handler(message, process_repository_name)
 
 
 def process_repository_name(message):
-    repository_name = message.text
+    repository_name = '-'.join(message.text.split())
 
     chat_id = message.chat.id
 
@@ -79,12 +79,12 @@ def process_prompt(message, user_context):
 
     url = handle_game("dastanozgeldi", repository_name, prompt)
 
-    # Generate the portfolio page using the repository name and prompt
-    # portfolio_page = generate_portfolio(repository_name, prompt)
-    # portfolio_page = "https://dosek.xyz/"
+    # Generate game using the repository name and prompt
+    # game_page = generate_game(repository_name, prompt)
+    # game_page = "https://dosek.xyz/"
 
-    # Send the generated portfolio page to the user
-    bot.send_message(message.chat.id, f"Here is your portfolio page:\n{url}")
+    # Send the generated game page to the user
+    bot.send_message(message.chat.id, f"Here is your game:\n{url}")
 
 
 bot.infinity_polling()
